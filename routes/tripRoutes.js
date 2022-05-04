@@ -1,57 +1,27 @@
 const express = require("express");
 const router = express.Router();
-const { Location, Traveller, Trip } = require("../models/");
-// Find all travellers
-router.get("/",(req,res)=>{
-    Traveller.findAll({
+const { Trip } = require("../models");
 
-    })
-    .then(dbTrav=>{
-        res.json(dbTrav);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
-});
-// Find one Traveller
-router.get("/:id",(req,res)=>{
-    Traveller.findByPk(req.params.id,{
-        
-    })
-    .then(dbTrav=>{
-        res.json(dbTrav);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
-});
-// Create a Traveller
+// Create a trip
 router.post("/",(req, res)=>{
-    Traveller.create(req.body)
-    .then(newTrav=>{
-        res.json(newTrav);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
-});
-// Delete a Traveller
-router.delete("/:id",(req, res)=>{
-    Traveller.destroy({
-        where: {
-            id: req.params.id
+    try{
+        const tripData = await Trip.create(req.body);
+        res.status(200).json(tripData);
+        } catch (err) {
+            res.status(500).json(err);
         }
-    })
-    .then(delTrav=>{
-        res.json(delTrav);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
 });
+// Delete a trip
+router.delete("/:id",(req, res)=>{
+    try{
+        const tripData = await Trip.destroy({
+            where: {id: req.params.id}
+        });
+        res.status(200).json(tripData);
+        } catch (err) {
+            res.status(500).json(err);
+        }
+});
+
 
 module.exports = router;

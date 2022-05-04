@@ -1,57 +1,46 @@
 const express = require("express");
 const router = express.Router();
-const {Location,Traveller,Trip} = require("../models/");
+const {Location, Trip} = require("../models/");
 // Find all locations
 router.get("/",(req,res)=>{
-    Location.findAll({
-
-    })
-    .then(dbLoc=>{
-        res.json(dbLoc);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
+    try{
+    const locationData = await Location.findAll();
+    res.status(200).json(locationData);
+    } catch (err) {
+        res.status(500).json(err);
+    }
 });
 // Find one location
 router.get("/:id",(req,res)=>{
-    Location.findByPk(req.params.id,{
-        
-    })
-    .then(dbLoc=>{
-        res.json(dbLoc);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
+    try{
+        const locationData = await Location.findByPk(req.params.id,{
+            include: [{ model: Trip }],
+        });
+        res.status(200).json(locationData);
+        } catch (err) {
+            res.status(500).json(err);
+        }
 });
 // Create a location
 router.post("/",(req, res)=>{
-    Location.create(req.body)
-    .then(newLoc=>{
-        res.json(newLoc);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
+    try{
+        const locationData = await Location.create(req.body);
+        res.status(200).json(locationData);
+        } catch (err) {
+            res.status(500).json(err);
+        }
 });
 // Delete a location
 router.delete("/:id",(req, res)=>{
-    Location.destroy({
-        where: {
-            id: req.params.id
+    try{
+        const locationData = await Location.destroy({
+            where: {id: req.params.id}
+        });
+        res.status(200).json(locationData);
+        } catch (err) {
+            res.status(500).json(err);
         }
-    })
-    .then(delLoc=>{
-        res.json(delLoc);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
 });
+
 
 module.exports = router;

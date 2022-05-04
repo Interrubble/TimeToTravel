@@ -1,58 +1,45 @@
 const express = require("express");
 const router = express.Router();
-const { Location, Traveller, Trip } = require("../models/");
-
-// Find all trips
+const { Traveller, Trip } = require("../models");
+// Find all travellers
 router.get("/",(req,res)=>{
-    Trip.findAll({
-
-    })
-    .then(dbTrip=>{
-        res.json(dbTrip);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
+    try{
+    const travellerData = await Traveller.findAll();
+    res.status(200).json(travellerData);
+    } catch (err) {
+        res.status(500).json(err);
+    }
 });
-// Find one Trip
+// Find one Traveller
 router.get("/:id",(req,res)=>{
-    Trip.findByPk(req.params.id,{
-        
-    })
-    .then(dbTrip=>{
-        res.json(dbTrip);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
-});
-// Create a Trip
-router.post("/",(req, res)=>{
-    Trip.create(req.body)
-    .then(newTrip=>{
-        res.json(newTrip);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
-});
-// Delete a Trip
-router.delete("/:id",(req, res)=>{
-    Trip.destroy({
-        where: {
-            id: req.params.id
+    try{
+        const travellerData = await Traveller.findByPk(req.params.id,{
+            include: [{ model: Trip }],
+        });
+        res.status(200).json(travellerData);
+        } catch (err) {
+            res.status(500).json(err);
         }
-    })
-    .then(delTrip=>{
-        res.json(delTrip);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.status(500).json({msg:"An Error Occured",err});
-    });
+});
+// Create a Traveller
+router.post("/",(req, res)=>{
+    try{
+        const travellerData = await Traveller.create(req.body);
+        res.status(200).json(travellerData);
+        } catch (err) {
+            res.status(500).json(err);
+        }
+});
+// Delete a Traveller
+router.delete("/:id",(req, res)=>{
+    try{
+        const travellerData = await Traveller.destroy({
+            where: {id: req.params.id}
+        });
+        res.status(200).json(travellerData);
+        } catch (err) {
+            res.status(500).json(err);
+        }
 });
 
 module.exports = router;
